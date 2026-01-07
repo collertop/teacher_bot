@@ -5,6 +5,7 @@ load_dotenv() #«Прочитаю файл .env и загружу перемен
 
 BOT_TOKEN = os.getenv("BOT_TOKEN") #достаёт значение по имени
 MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY") 
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 ADMIN_IDS = {int(x.strip()) for x in (os.getenv("ADMIN_IDS") or "").split(",") if x.strip().isdigit()}
 
 

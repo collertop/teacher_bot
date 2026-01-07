@@ -8,13 +8,16 @@ from aiogram.fsm.context import FSMContext
 from aiogram.exceptions import TelegramForbiddenError, TelegramRetryAfter
 from aiogram.filters import StateFilter
 
-
 from app.keyboards import MAIN_KB
 from app.limits import check_and_hit, peek_limits
 from app.services import ask_teacher
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from urllib.parse import quote
 from app.config import ADMIN_IDS
+
+from app.vision import extract_task_from_photo_gemini
+from aiogram.enums import ChatAction
+
 
 from app.db import (
     ensure_user,
@@ -104,12 +107,53 @@ async def start_handler(message: Message):
 
 @router.message(Command("help"))
 async def help_handler(message: Message):
-    await message.answer("Напиши задачу текстом, я объясню шаги решения ✅")    
+    await message.answer("Напиши задачу текстом, я объясню шаги решения ✅")
 
 
-@router.message(F.photo, ~StateFilter(BroadcastFlow.waiting_content), ~StateFilter(BroadcastFlow.waiting_confirm))
-async def photo_handler(message: Message):
-    await message.answer("Фото пока не умею разбирать 🙌 Пришли задачу текстом.")
+@router.message(F.photo)
+async def solve_from_photo(message: Message):
+    user_id = message.from_user.id
+
+    # активность/регистрация
+    await touch_user(user_id)
+    await ensure_user(user_id, message.from_user.username)
+
+    # 0) мгновенная проверка: если 0 — Gemini не трогаем
+    info0 = await peek_limits(user_id)
+    if info0["credits"] <= 0:
+        return await message.answer("⛔️ Ответы закончились. Завтра начислится +2 🎁")
+
+    # 1) скачать фото
+    photo = message.photo[-1]
+    file = await message.bot.get_file(photo.file_id)
+    photo_bytes = await message.bot.download_file(file.file_path)
+    data = photo_bytes.read()
+
+    # 2) typing + статус
+    await message.bot.send_chat_action(message.chat.id, ChatAction.TYPING)
+    await message.answer("🧠 Понял задачу с фото. Решаю…")
+
+    # 3) Gemini OCR: получить ТОЛЬКО текст условия
+    try:
+        task_text = await extract_task_from_photo_gemini(data)
+    except Exception:
+        return await message.answer("⛔️ Не получилось прочитать фото. Попробуй другое (четче/ближе).")
+
+    if not task_text:
+        return await message.answer("⛔️ Я не увидел текст на фото. Сделай фото ближе и ровнее.")
+
+    # 4) списываем кредит ТОЛЬКО после успешного OCR
+    ok, info = await check_and_hit(user_id)
+    if not ok:
+        return await message.answer(info)
+
+    # 5) решаем через Mistral (ask_teacher)
+    await message.bot.send_chat_action(message.chat.id, ChatAction.TYPING)
+    answer = await ask_teacher(task_text)
+
+    await message.answer(answer)
+    await message.answer(f"💳 Ответов осталось: {info['credits_left']}")
+
 
 @router.message(F.sticker)
 async def sticker_handler(message: Message):
@@ -222,10 +266,8 @@ async def examples_button(message: Message):
 @router.message(F.text == "📷 Решить по фото")
 async def solve_by_photo_button(message: Message):
     await message.answer(
-        "📷 Решение по фото скоро появится!\n\n"
-        "Мы уже работаем над этой функцией 🚀\n"
-        "Пока можешь прислать задачу текстом — я помогу ✍️\n\n"
-    )
+        "📷 Пришли фото!\n\n"
+    )    
 
     
 
