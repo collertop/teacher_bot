@@ -110,7 +110,7 @@ async def help_handler(message: Message):
     await message.answer("Напиши задачу текстом, я объясню шаги решения ✅")
 
 
-@router.message(F.photo)
+@router.message(StateFilter(None), F.photo)
 async def solve_from_photo(message: Message):
     user_id = message.from_user.id
 
@@ -127,7 +127,12 @@ async def solve_from_photo(message: Message):
     photo = message.photo[-1]
     file = await message.bot.get_file(photo.file_id)
     photo_bytes = await message.bot.download_file(file.file_path)
-    data = photo_bytes.read()
+
+    # ✅ Универсально: если это файл — читаем, если уже bytes — берём как есть
+    if hasattr(photo_bytes, "read"):
+        data = photo_bytes.read()
+    else:
+        data = photo_bytes
 
     # 2) typing + статус
     await message.bot.send_chat_action(message.chat.id, ChatAction.TYPING)
@@ -153,6 +158,8 @@ async def solve_from_photo(message: Message):
 
     await message.answer(answer)
     await message.answer(f"💳 Ответов осталось: {info['credits_left']}")
+
+
 
 
 @router.message(F.sticker)
