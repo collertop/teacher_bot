@@ -9,7 +9,7 @@ from aiogram.exceptions import TelegramForbiddenError, TelegramRetryAfter
 from aiogram.filters import StateFilter
 
 from app.keyboards import MAIN_KB
-from app.limits import check_and_hit, peek_limits
+from app.limits import check_and_hit, peek_limits, LIMIT_EXHAUSTED_MSG
 from app.services import ask_teacher
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from urllib.parse import quote
@@ -121,7 +121,7 @@ async def solve_from_photo(message: Message):
     # 0) мгновенная проверка: если 0 — Gemini не трогаем
     info0 = await peek_limits(user_id)
     if info0["credits"] <= 0:
-        return await message.answer("⛔️ Ответы закончились. Завтра начислится +2 🎁")
+        return await message.answer(LIMIT_EXHAUSTED_MSG)
 
     # 1) скачать фото
     photo = message.photo[-1]
@@ -155,9 +155,20 @@ async def solve_from_photo(message: Message):
     # 5) решаем через Mistral (ask_teacher)
     await message.bot.send_chat_action(message.chat.id, ChatAction.TYPING)
     answer = await ask_teacher(task_text)
-
     await message.answer(answer)
-    await message.answer(f"💳 Ответов осталось: {info['credits_left']}")
+
+    credits_left = info["credits_left"]
+    if credits_left <= 0:
+        await message.answer(
+            "💳 Ответов больше нет.\n"
+            "🎁 Завтра автоматически начислится +2\n\n"
+            "🤝 Хочешь продолжить уже сейчас?\n"
+            "Пригласи друга — получишь +5 ответов.\n\n"
+            "Открой «💳 Лимиты» и забери ссылку."
+        )
+    else:
+        await message.answer(f"💳 Ответов осталось: {credits_left}")
+
 
 
 
@@ -229,10 +240,21 @@ async def task_text_handler(message: Message, state: FSMContext):
 
     answer = await ask_teacher(message.text)
     await message.answer(answer)
-    await message.answer(f"💳 Ответов осталось: {credits_left}")
+
+    if credits_left <= 0:
+        await message.answer(
+            "💳 Ответов больше нет.\n"
+            "🎁 Завтра автоматически начислится +2\n\n"
+            "🤝 Хочешь продолжить уже сейчас?\n"
+            "Пригласи друга — получишь +5 ответов.\n\n"
+            "Открой «💳 Лимиты» и забери ссылку."
+        )
+    else:
+        await message.answer(f"💳 Ответов осталось: {credits_left}")
 
     # выходим из режима задания
     await state.clear()
+
     
 
 @router.message(F.text == "✍️ Новое задание")
