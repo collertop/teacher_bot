@@ -33,7 +33,7 @@ Mistral handles reasoning and answers.
 - `google-generativeai` (Gemini)
 - `mistralai` (Mistral)
 - `python-dotenv`
-- SQLite (built-in)
+- `SQLite` (built-in)
 
 ---
 
