@@ -4,8 +4,7 @@
 
 ## 📷 Demo
 
-![bot in action]([./demo.gif](https://image2url.com/r2/default/gifs/1771237270106-ecfa4a44-6836-4890-952a-669c1bdcd2da.gif))
-
+![Bot Demo](./demo.gif)
 
 # teacher_bot
 
