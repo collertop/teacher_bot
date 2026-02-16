@@ -2,6 +2,10 @@
 ![License](https://img.shields.io/github/license/collertop/teacher_bot)
 ![Python](https://img.shields.io/badge/Python-3.10+-blue)
 
+## 📷 Demo
+
+![bot in action](./demo.gif)
+
 
 # teacher_bot
 
