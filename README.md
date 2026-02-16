@@ -61,6 +61,7 @@ If requirements.txt is missing, install manually:
 ```bash
 pip install python-telegram-bot google-generativeai mistralai python-dotenv
 ```
+---
 
 ## 🔐 Configuration (.env)
 Create a .env file in the project root:
