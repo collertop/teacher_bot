@@ -1,3 +1,8 @@
+![GitHub stars](https://img.shields.io/github/stars/collertop/teacher_bot)
+![License](https://img.shields.io/github/license/collertop/teacher_bot)
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+
+
 # teacher_bot
 
 AI-powered Telegram bot that helps students solve educational tasks via text and photos.
