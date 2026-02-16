@@ -33,6 +33,22 @@ This design minimizes Gemini token usage and keeps the bot cost-efficient.
 
 ---
 
+## 📦 Dependencies
+
+The project requires the following Python packages:
+
+- python-telegram-bot
+- google-generativeai
+- mistralai
+- python-dotenv
+- sqlite3 (built-in)
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+
+
 ## ▶ Run (local)
 
 1. Create virtual environment  
