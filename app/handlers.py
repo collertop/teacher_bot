@@ -55,7 +55,6 @@ async def start_handler(message: Message):
     )
     await touch_user(message.from_user.id)
 
-
     # ⬇️ РЕФЕРАЛКА ТОЛЬКО ЕСЛИ ЮЗЕР НОВЫЙ
     if is_new and ref_id and ref_id.isdigit():
         inviter_id = int(ref_id)
@@ -86,8 +85,14 @@ async def start_handler(message: Message):
                 except TelegramForbiddenError:
                     pass
 
+    # 👇 1) Приветствие с кнопкой поддержки (inline)
+    support_kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(
+            text="💬 Условия конкурса",
+            url="https://t.me/reshebnik_gdz_ai_onegin"
+        )]
+    ])
 
-    # 4) приветствие
     await message.answer(
         "Привет! Я решебник — Онегин✍️📘\n\n"
         "🤝Твой школьный ИИ-наставник. Помогаю разбирать задачи по шагам.\n\n"
@@ -95,11 +100,14 @@ async def start_handler(message: Message):
         "Лайфхаки для лучшего результата:\n"
         "• Делай четкие фото при хорошем свете\n"
         "• Пиши после ответа доп.вопросы, если нужно больше информации\n\n"
-        
         "Нажми НОВОЕ ЗАДАНИЕ — и поехали 👇",
-        
-        
-        reply_markup=MAIN_KB
+        reply_markup=support_kb,
+    )
+
+    # 👇 2) Отдельным сообщением включаем панель с кнопками (MAIN_KB)
+    await message.answer(
+        "Напиши задачу или выбери кнопку 👇",
+        reply_markup=MAIN_KB,
     )
 
 
