@@ -1,43 +1,38 @@
 # teacher_bot
 
-Telegram AI bot that helps students solve educational tasks via text and photos.
+AI-powered Telegram bot that helps students solve educational tasks via text and photos.
 
 ---
 
 ## 🚀 Features
 
-- Solve tasks from text messages
-- Solve tasks from photos
-- Daily token limit system
-- User notification when limit is exhausted
-- Cost-efficient AI architecture (vision + reasoning split)
+- Solve tasks with plain text
+- Solve tasks from photos (vision + reasoning)
+- Daily token limit and notification
+- Minimal vision token usage for cost-efficiency
 
 ---
 
 ## 🧠 Architecture
 
-### Text flow
+**Text flow**  
 Text → Mistral → Telegram response
 
-### Photo flow
-Photo → Gemini (vision) → Extracted text → Mistral (reasoning) → Telegram response
+**Photo flow**  
+Photo → Gemini (vision) → Extracted text → Mistral → Telegram response
 
-### Why this split?
-
-Gemini is used only for vision (OCR / understanding the image).  
-Mistral performs reasoning and generates the final response.
-
-This approach reduces vision-model usage and keeps the "cheap/free bot" concept.
+Gemini is used only for vision (OCR).  
+Mistral handles reasoning and answers.
 
 ---
 
 ## 🛠 Tech Stack
 
-- Python 3.10+ (recommended)
-- python-telegram-bot
-- google-generativeai (Gemini)
-- mistralai (Mistral)
-- python-dotenv
+- Python 3.10+
+- `python-telegram-bot`
+- `google-generativeai` (Gemini)
+- `mistralai` (Mistral)
+- `python-dotenv`
 - SQLite (built-in)
 
 ---
@@ -84,15 +79,17 @@ GEMINI_API_KEY is required for photo solving
 ADMIN_IDS is optional (comma-separated Telegram user IDs)
 ```
 
-▶ Run the bot
+##▶ Run the bot
+```bash
 python main.py
+```
 
-📁 Project Structure
-# main.py — application entry point
-# app/config.py — environment configuration
-# app/handlers.py — Telegram message handlers
-# app/services.py — Mistral integration and business logic
-# app/vision.py — Gemini photo text extraction
-# app/limits.py — daily token limit logic
-# app/db.py — SQLite database logic
+##📁 Project Structure
+ main.py — application entry point
+ app/config.py — environment configuration
+ app/handlers.py — Telegram message handlers
+ app/services.py — Mistral integration and business logic
+ app/vision.py — Gemini photo text extraction
+ app/limits.py — daily token limit logic
+ app/db.py — SQLite database logic
 
