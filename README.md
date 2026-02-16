@@ -1,7 +1,7 @@
 # teacher_bot
 
 AI-powered Telegram bot that helps students solve educational tasks.
-
+Completely free!
 ---
 
 ## 🚀 Features
