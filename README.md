@@ -83,11 +83,11 @@ python main.py
 ```
 
 ## 📁 Project Structure
- main.py — application entry point
- app/config.py — environment configuration
- app/handlers.py — Telegram message handlers
- app/services.py — Mistral integration and business logic
- app/vision.py — Gemini photo text extraction
- app/limits.py — daily token limit logic
- app/db.py — SQLite database logic
+ `main.py — application entry point`
+ `app/config.py — environment configuration`
+ `app/handlers.py — Telegram message handlers`
+ `app/services.py — Mistral integration and business logic`
+ `app/vision.py — Gemini photo text extraction`
+ `app/limits.py — daily token limit logic`
+ `app/db.py — SQLite database logic`
 
