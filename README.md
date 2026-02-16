@@ -70,16 +70,14 @@ MISTRAL_API_KEY=your_mistral_api_key
 GEMINI_API_KEY=your_gemini_api_key
 ADMIN_IDS=123456789,987654321
 ```
-#Notes:
-```bash
+# Notes:
 
 BOT_TOKEN is required
 MISTRAL_API_KEY is required for solving tasks
 GEMINI_API_KEY is required for photo solving
 ADMIN_IDS is optional (comma-separated Telegram user IDs)
-```
 
-##▶ Run the bot
+## ▶ Run the bot
 ```bash
 python main.py
 ```
