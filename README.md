@@ -28,7 +28,7 @@ Mistral handles reasoning and answers.
 
 ## 🛠 Tech Stack
 
-- Python 3.10+
+- `Python 3.10+`
 - `python-telegram-bot`
 - `google-generativeai` (Gemini)
 - `mistralai` (Mistral)
@@ -72,17 +72,17 @@ ADMIN_IDS=123456789,987654321
 ```
 # Notes:
 
-BOT_TOKEN is required
-MISTRAL_API_KEY is required for solving tasks
-GEMINI_API_KEY is required for photo solving
-ADMIN_IDS is optional (comma-separated Telegram user IDs)
+- `BOT_TOKEN is required`
+- `MISTRAL_API_KEY is required for solving tasks`
+- `GEMINI_API_KEY is required for photo solving`
+- `ADMIN_IDS is optional (comma-separated Telegram user IDs)`
 
 ## ▶ Run the bot
 ```bash
 python main.py
 ```
 
-##📁 Project Structure
+## 📁 Project Structure
  main.py — application entry point
  app/config.py — environment configuration
  app/handlers.py — Telegram message handlers
